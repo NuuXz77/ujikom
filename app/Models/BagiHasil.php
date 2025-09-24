@@ -13,14 +13,23 @@ class BagiHasil extends Model
     protected $table = 'bagi_hasils';
 
     protected $fillable = [
-        'ID_Penyewaan',
+        'penyewaan_id',
         'bagi_hasil_pemilik',
         'bagi_hasil_admin',
         'settled_at',
     ];
 
+    // Tambahkan cast untuk mengkonversi settled_at menjadi Carbon instance
+    protected $casts = [
+        'settled_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'bagi_hasil_pemilik' => 'decimal:2',
+        'bagi_hasil_admin' => 'decimal:2',
+    ];
+
     public function penyewaan()
     {
-        return $this->belongsTo(Penyewaan::class, 'ID_Penyewaan', 'ID_Penyewaan');
+        return $this->belongsTo(Penyewaan::class, 'penyewaan_id', 'ID_Penyewaan');
     }
 }

@@ -41,4 +41,9 @@ class Penyewaan extends Model
     {
         return $this->hasOne(BagiHasil::class, 'ID_Penyewaan', 'ID_Penyewaan');
     }
+
+    public function pembayaran()
+    {
+        return $this->hasOne(Pembayaran::class, 'penyewaan_id', 'ID_Penyewaan');
+    }
 }

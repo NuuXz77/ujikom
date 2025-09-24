@@ -17,8 +17,12 @@ Route::middleware(['auth'])->group(function () {
         Volt::route('/admin/motors/edit/{id}', 'admin.motors.edit')->name('edit-motors-admin');
 
         Volt::route('/admin/bookings', 'admin.bookings.index')->name('bookings-admin');
+        Volt::route('/admin/bookings/detail/{id}', 'admin.bookings.detail')->name('detail-bookings-admin');
 
         Volt::route('/admin/users', 'admin.users.index')->name('users-admin');
+        Volt::route('/admin/users/create', 'admin.users.create')->name('create-users-admin');
+        Volt::route('/admin/users/detail/{id}', 'admin.users.detail')->name('detail-users-admin');
+        Volt::route('/admin/users/{id}/edit', 'admin.users.edit')->name('edit-users-admin');
 
         Volt::route('/admin/revenue', 'admin.revenue.index')->name('revenue-admin');
 
@@ -36,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
         Volt::route('/dashboard', 'penyewa.dashboard.index')->name('dashboard-penyewa');
 
         Volt::route('/bookings', 'penyewa.motors.index')->name('motors-penyewa');
+        Volt::route('/history', 'penyewa.bookings.history')->name('history-penyewa');
 
         Volt::route('/bookings/{id}', 'penyewa.bookings.index')->name('bookings-penyewa');
 

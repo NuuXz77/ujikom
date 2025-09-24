@@ -129,7 +129,7 @@ new class extends Component {
             @if ($motor['status'] == 'tersedia')
                 <x-badge value="Tersedia" class="badge badge-success badge-soft" />
             @elseif ($motor['status'] == 'disewa')
-                <x-badge value ="Disewa" class="badge badge-primary badge-soft" />
+                <x-badge value="Disewa" class="badge badge-primary badge-soft" />
             @elseif ($motor['status'] == 'dibooking')
                 <x-badge value="Dibooking" class="badge badge-info badge-soft" />
             @elseif ($motor['status'] == 'sedang_diverifikasi')

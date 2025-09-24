@@ -7,6 +7,13 @@ use Illuminate\Pagination\LengthAwarePaginator;
 new class extends Component {
     use WithPagination;
 
+    protected $listeners = ['refresh' => 'refreshTable'];
+
+    public function refreshTable()
+    {
+        $this->resetPage();
+    }
+
     public int $perPage = 10;
     public array $sortBy = ['column' => 'nama', 'direction' => 'asc'];
     public array $headers = [
@@ -97,6 +104,7 @@ new class extends Component {
                 </x-slot:trigger>
                 <x-menu-item title="Detail" icon="o-eye" link="/admin/users/detail/{{ $user->ID_User }}" />
                 <x-menu-item title="Edit" icon="o-pencil" link="/admin/users/{{ $user->ID_User }}/edit" />
+                <x-menu-item title="Reset Password" icon="o-key" wire:click="$dispatch('showResetPasswordModal', { id: {{ $user->ID_User }} })" class="text-orange-500" />
                 <x-menu-item title="Hapus" icon="o-trash" wire:click="$dispatch('showDeleteModal', { id: {{ $user->ID_User }} })" class="text-red-500" />
             </x-dropdown>
         @endscope
@@ -104,4 +112,7 @@ new class extends Component {
             <x-icon name="o-users" label="Data pengguna tidak ditemukan." />
         </x-slot:empty>
     </x-table>
+
+    <livewire:admin.users.delete />
+    <livewire:admin.users.reset-password />
 </div>

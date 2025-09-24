@@ -31,8 +31,7 @@ new class extends Component {
         // Ambil semua penyewaan user dengan status pending atau disewa
         $query = Penyewaan::with('motor')
             ->where('penyewa_id', $userId)
-            ->when($this->status, fn($q)=> $q->where('status', $this->status))
-            ->whereIn('status', ['pending','disewa']);
+            ->when($this->status, fn($q)=> $q->where('status', $this->status));
 
         $rows = $query->get()->map(function($p){
             $expired = Carbon::parse($p->tanggal_selesai)->isPast();
@@ -106,10 +105,8 @@ new class extends Component {
         @scope('cell_status', $row)
             @if($row['status']==='pending')
                 <x-badge value="Pending" class="badge-warning badge-soft" />
-            @elseif($row['status']==='disewa')
-                <x-badge value="Disewa" class="badge-primary badge-soft" />
-            @elseif($row['status']==='kadaluarsa')
-                <x-badge value="Kadaluarsa" class="badge-error badge-soft" />
+            @elseif($row['status']==='dibayar')
+                <x-badge value="Dibayar" class="badge-success badge-soft" />
             @endif
         @endscope
         @scope('cell_actions', $row)

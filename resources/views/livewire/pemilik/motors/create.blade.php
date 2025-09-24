@@ -77,7 +77,7 @@ new class extends Component {
     <x-header title="Daftarkan Motor" separator progress-indicator>
         <x-slot:middle></x-slot:middle>
         <x-slot:actions>
-            <x-button icon="o-arrow-left" label="Kembali" link="/motors" class="btn-ghost" />
+            <x-button icon="o-arrow-left" label="Kembali" link="/owner/motors" class="btn-ghost" />
         </x-slot:actions>
     </x-header>
 

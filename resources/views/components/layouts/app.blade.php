@@ -45,21 +45,16 @@
                 @php
                     $user = auth()->user();
                 @endphp
-                <x-button label="Booking" class="btn-primary btn-soft" icon="o-shopping-cart" link="/bookings" />
+                <x-button label="Booking" class="btn-primary btn-soft" icon="o-clipboard-document-list" link="/bookings" />
                 <x-dropdown>
                     <x-slot:trigger>
-                        {{-- <div class="flex items-center gap-2 cursor-pointer">
-                            <x-icon name="o-user" class="w-6 h-6" />
-                            <span class="font-semibold">{{ $user->name ?? $user->full_name ?? 'User' }}</span>
-                        </div> --}}
                         <x-button icon="o-user-circle" label="{{ $user->nama ?? ($user->full_name ?? 'User') }}"
                             class="btn btn-ghost" />
-                        </x-slot:trigger>
-                        <x-menu-item title="Profile" icon="o-user" link="/profile" />
-                        <x-menu-item title="Transaksi" icon="o-shopping-cart" link="/rented-history" />
+                    </x-slot:trigger>
+                    <x-menu-item title="Profile" icon="o-user" link="/profile" />
+                    <x-menu-item title="Transaksi" icon="o-credit-card" link="/history" />
                     <x-menu-separator />
                     <livewire:auth.logout>
-                        {{-- <x-menu-item title="Logout" icon="o-arrow-right-on-rectangle" link="/logout" /> --}}
                 </x-dropdown>
             </x-slot:actions>
         </x-nav>
@@ -80,57 +75,32 @@
                     @if ($user = auth()->user())
                         <x-menu-separator />
 
-                        <x-list-item :item="$user" value="name" sub-value="email" no-separator no-hover
+                        <x-list-item :item="$user" value="nama" sub-value="email" no-separator no-hover
                             class="-mx-2 !-my-2 rounded">
-                            <x-slot:actions>
-                                {{-- <livewire:auth.logout /> --}}
-                            </x-slot:actions>
+                            <x-slot:avatar>
+                                <x-icon name="o-user-circle" class="w-8 h-8" />
+                            </x-slot:avatar>
                         </x-list-item>
 
                         <x-menu-separator />
                     @endif
 
                     @if (auth()->user() && auth()->user()->role === 'admin')
-                        <x-menu-item title="Dashboard" icon="o-home" link="/admin/dashboard" />
+                        <x-menu-item title="Dashboard" icon="o-squares-2x2" link="/admin/dashboard" />
                         <x-menu-item title="Data Motor" icon="o-truck" link="/admin/motors" />
-
-                        {{-- <x-menu-sub title="Manajemen Motors" icon="o-truck">
-                            <x-menu-item title="Aktif" icon="o-check-circle" link="/manajemen-motors/active" />
-                            <x-menu-item title="Disewa" icon="o-clock" link="/manajemen-motors/rented" />
-                            <x-menu-item title="Verifikasi" icon="o-shield-check" link="/manajemen-motors/verification" />
-                        </x-menu-sub> --}}
-
-                        <x-menu-item title="Data Sewa" icon="o-truck" link="/admin/bookings" />
-
-                        {{-- <x-menu-sub title="Manajemen Penyewaan" icon="o-truck">
-                            <x-menu-item title="Perlu Konfirmasi" icon="o-check-circle" link="/manajemen-motors/active" />
-                            <x-menu-item title="Disewa" icon="o-clock" link="/manajemen-motors/rented" />
-                            <x-menu-item title="Kadaluarsa" icon="o-shield-check" link="/manajemen-motors/verification" />
-                        </x-menu-sub> --}}
-                        
-                        <x-menu-item title="Data User" icon="o-user-group" link="/admin/users" />
-                        <x-menu-item title="Bagi Hasil" icon="o-currency-dollar" link="/admin/revenue" />
-                        <x-menu-item title="Transaksi" icon="o-currency-dollar" link="/admin/history" />
-
-                        {{-- <x-menu-sub title="Data Users" icon="o-user-group">
-                            <x-menu-item title="Pemilik" icon="o-user-group" link="/manajemen-users?role=pemilik" />
-                            <x-menu-item title="Penyewa" icon="o-user" link="/manajemen-users?role=penyewa" />
-                        </x-menu-sub> --}}
+                        <x-menu-item title="Data Sewa" icon="o-clipboard-document-list" link="/admin/bookings" />
+                        <x-menu-item title="Data User" icon="o-users" link="/admin/users" />
+                        <x-menu-item title="Bagi Hasil" icon="o-chart-pie" link="/admin/revenue" />
+                        <x-menu-item title="Transaksi" icon="o-credit-card" link="/admin/history" />
                     @endif
 
                     @if (auth()->user() && auth()->user()->role === 'pemilik')
-                        <x-menu-item title="Dashboard" icon="o-home" link="/owner/dashboard" />
+                        <x-menu-item title="Dashboard" icon="o-squares-2x2" link="/owner/dashboard" />
                         <x-menu-item title="Motor" icon="o-truck" link="/owner/motors" />
-                        <x-menu-item title="Laporan" icon="o-document-text" link="/owner/revenue" />
+                        <x-menu-item title="Laporan" icon="o-document-chart-bar" link="/owner/revenue" />
                     @endif
-
-                    @if (auth()->user() && auth()->user()->role === 'penyewa')
-                    @endif
-                    {{-- <x-menu-item title="Hello" icon="o-sparkles" link="/hallo" /> --}}
 
                     <x-menu-sub title="Settings" icon="o-cog-6-tooth">
-                        {{-- <x-menu-item title="Wifi" icon="o-wifi" link="####" />
-                        <x-menu-item title="Archives" icon="o-archive-box" link="####" /> --}}
                         <livewire:auth.logout />
                     </x-menu-sub>
                 </x-menu>
@@ -138,7 +108,6 @@
         @endif
 
         {{-- CONTENT --}}
-        {{-- The `$slot` goes here --}}
         <x-slot:content>
             {{ $slot }}
         </x-slot:content>

@@ -118,7 +118,13 @@ new class extends Component {
         @scope('cell_settled_at', $row)
             @if($row->settled_at)
                 <x-badge value="Settled" class="badge badge-success badge-soft" />
-                <span class="text-xs text-gray-500 block">{{ $row->settled_at->format('d/m/Y H:i') }}</span>
+                <span class="text-xs text-gray-500 block">
+                    @if(is_string($row->settled_at))
+                        {{ \Carbon\Carbon::parse($row->settled_at)->format('d/m/Y H:i') }}
+                    @else
+                        {{ $row->settled_at->format('d/m/Y H:i') }}
+                    @endif
+                </span>
             @else
                 <x-badge value="Pending" class="badge badge-warning badge-soft" />
             @endif

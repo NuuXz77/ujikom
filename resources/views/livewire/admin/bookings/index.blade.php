@@ -123,8 +123,8 @@ new class extends Component {
                 <x-badge value="Pending" class="badge badge-warning badge-soft" />
             @elseif ($status === 'active')
                 <x-badge value="Active" class="badge badge-primary badge-soft" />
-            @elseif ($status === 'completed')
-                <x-badge value="Completed" class="badge badge-success badge-soft" />
+            @elseif ($status === 'dibayar')
+                <x-badge value="Dibayar" class="badge badge-success badge-soft" />
             @else
                 <x-badge value="Canceled" class="badge badge-error badge-soft" />
             @endif

@@ -17,10 +17,16 @@ class Transaksi extends Model
         'metode_pembayaran',
         'status',
         'tanggal',
+        'jumlah',
+    ];
+
+    protected $casts = [
+        'tanggal' => 'datetime',
+        'jumlah' => 'decimal:2',
     ];
 
     public function penyewaan()
     {
-        return $this->belongsTo(Penyewaan::class, 'ID_Penyewaan', 'ID_Penyewaan');
+        return $this->belongsTo(Penyewaan::class, 'penyewaan_id', 'ID_Penyewaan');
     }
 }

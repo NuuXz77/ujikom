@@ -140,7 +140,7 @@ new class extends Component {
                     <x-button icon="m-ellipsis-vertical" class="btn-circle" />
                 </x-slot:trigger>
                 <x-menu-item title="Detail" icon="o-eye" link="/admin/motors/detail/{{ $motor->ID_Motor }}" />
-                <x-menu-item title="Edit" icon="o-pencil" link="/admin/motors/{{ $motor->ID_Motor }}/edit" />
+                <x-menu-item title="Edit" icon="o-pencil" link="/admin/motors/edit/{{ $motor->ID_Motor }}" />
                 <x-menu-item title="Hapus" icon="o-trash"
                     wire:click="$dispatch('showDeleteModal', { id: {{ $motor->ID_Motor }} })" class="text-red-500" />
             </x-dropdown>
