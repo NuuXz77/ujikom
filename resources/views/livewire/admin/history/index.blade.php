@@ -10,7 +10,7 @@ new class extends Component {
     protected $listeners = ['refresh' => 'refreshTable'];
 
     public int $perPage = 10;
-    public array $sortBy = ['column' => 'tanggal', 'direction' => 'desc'];
+    public array $sortBy = ['column' => 'created_at', 'direction' => 'desc'];
     public array $headers = [
         ['key' => 'no', 'label' => 'No', 'sortable' => false],
         ['key' => 'kode', 'label' => 'Kode Sewa', 'sortable' => true],
@@ -32,7 +32,7 @@ new class extends Component {
 
     public function mount(): void
     {
-        $this->metodeOptions = \App\Models\Transaksi::query()->pluck('metode_pembayaran')->unique()->sort()->values()->toArray();
+        $this->metodeOptions = \App\Models\Pembayaran::query()->pluck('metode_pembayaran')->unique()->sort()->values()->toArray();
         $this->merks = \App\Models\Motors::query()->pluck('merk')->unique()->sort()->values()->toArray();
     }
 
@@ -40,7 +40,7 @@ new class extends Component {
 
     public function getRowsProperty(): LengthAwarePaginator
     {
-        return \App\Models\Transaksi::with(['penyewaan.motor.owner'])
+        return \App\Models\Pembayaran::with(['penyewaan.motor.owner', 'penyewaan.user'])
             ->when($this->search, function ($query) {
                 $query->whereHas('penyewaan', function ($q) {
                     $q->where('ID_Penyewaan', 'like', "%{$this->search}%");
@@ -52,7 +52,7 @@ new class extends Component {
             ->when($this->merk, fn($q) => $q->whereHas('penyewaan.motor', fn($m) => $m->where('merk', $this->merk)))
             ->when($this->statusTransaksi, fn($q) => $q->where('status', $this->statusTransaksi))
             ->when($this->metode, fn($q) => $q->where('metode_pembayaran', $this->metode))
-            ->orderBy($this->sortBy['column'], $this->sortBy['direction'])
+            ->orderBy($this->sortBy['column'] === 'tanggal' ? 'created_at' : $this->sortBy['column'], $this->sortBy['direction'])
             ->paginate($this->perPage);
     }
 
@@ -99,13 +99,13 @@ new class extends Component {
             #{{ $row->penyewaan->ID_Penyewaan ?? '-' }}
         @endscope
         @scope('cell_tanggal', $row)
-            {{ \Carbon\Carbon::parse($row->tanggal)->format('d/m/Y') }}
+            {{ \Carbon\Carbon::parse($row->tanggal_bayar ?? $row->created_at)->format('d/m/Y') }}
         @endscope
         @scope('cell_motor', $row)
             {{ $row->penyewaan->motor->merk ?? '-' }} ({{ $row->penyewaan->motor->no_plat ?? '-' }})
         @endscope
         @scope('cell_penyewa', $row)
-            {{ $row->penyewaan->motor->owner->nama ?? '-' }}
+            {{ $row->penyewaan->user->nama ?? '-' }}
         @endscope
         @scope('cell_metode_pembayaran', $row)
             {{ $row->metode_pembayaran }}
@@ -120,14 +120,14 @@ new class extends Component {
             @endif
         @endscope
         @scope('cell_harga', $row)
-            Rp {{ number_format($row->penyewaan->harga ?? 0, 0, ',', '.') }}
+            Rp {{ number_format($row->jumlah_bayar ?? 0, 0, ',', '.') }}
         @endscope
         @scope('cell_actions', $row)
             <x-dropdown>
                 <x-slot:trigger>
                     <x-button icon="m-ellipsis-vertical" class="btn-circle" />
                 </x-slot:trigger>
-                <x-menu-item title="Detail" icon="o-eye" link="/admin/history/detail/{{ $row->ID_Transaksi }}" />
+                <x-menu-item title="Detail" icon="o-eye" link="/admin/history/detail/{{ $row->ID_Pembayaran }}" />
             </x-dropdown>
         @endscope
         <x-slot:empty>

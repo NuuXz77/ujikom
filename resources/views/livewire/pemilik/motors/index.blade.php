@@ -11,6 +11,8 @@ new class extends Component {
     public string $tipe_cc = '';
     public array $merks = [];
     public array $ccOptions = ['100cc', '125cc', '150cc'];
+    
+    protected $listeners = ['refresh' => '$refresh'];
 
     public function mount(): void
     {
@@ -134,6 +136,8 @@ new class extends Component {
                 <x-badge value="Dibooking" class="badge badge-info badge-soft" />
             @elseif ($motor['status'] == 'sedang_diverifikasi')
                 <x-badge value="Sedang Diverifikasi" class="badge badge-warning badge-soft" />
+            @elseif ($motor['status'] == 'dibayar')
+                <x-badge value="Dibayar" class="badge badge-info badge-soft" />
             @else
                 <x-badge value="Perbaikan" class="badge badge-error badge-soft" />
             @endif
@@ -148,8 +152,9 @@ new class extends Component {
                 </x-slot:trigger>
                 <x-menu-item title="Detail" icon="o-eye" link="/owner/motors/detail/{{ $motor['id'] }}" />
                 <x-menu-item title="Edit" icon="o-pencil" link="/owner/motors/edit/{{ $motor['id'] }}" />
+                <x-menu-separator />
                 <x-menu-item title="Hapus" icon="o-trash"
-                    wire:click="$dispatch('showDeleteModal', { id: '{{ $motor['id'] }}' })" class="text-red-500" />
+                    wire:click="$dispatch('showDeleteModal', { id: {{ $motor['id'] }} })" class="text-red-500" />
             </x-dropdown>
         @endscope
 
@@ -157,4 +162,6 @@ new class extends Component {
             <x-icon name="o-cube" label="Data motor tidak di temukan." />
         </x-slot:empty>
     </x-table>
+
+    <livewire:pemilik.motors.delete />
 </div>

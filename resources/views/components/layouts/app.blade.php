@@ -89,6 +89,7 @@
                         <x-menu-item title="Dashboard" icon="o-squares-2x2" link="/admin/dashboard" />
                         <x-menu-item title="Data Motor" icon="o-truck" link="/admin/motors" />
                         <x-menu-item title="Data Sewa" icon="o-clipboard-document-list" link="/admin/bookings" />
+                        {{-- <x-menu-item title="Pengembalian" icon="o-arrow-uturn-left" link="/admin/returns" /> --}}
                         <x-menu-item title="Data User" icon="o-users" link="/admin/users" />
                         <x-menu-item title="Bagi Hasil" icon="o-chart-pie" link="/admin/revenue" />
                         <x-menu-item title="Transaksi" icon="o-credit-card" link="/admin/history" />

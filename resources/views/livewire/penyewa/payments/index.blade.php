@@ -90,6 +90,13 @@ new class extends Component {
     public function selectMethod($value)
     {
         $this->selectedMethod = $value;
+        
+        // Jika bukan cash, set uang bayar sama dengan harga (uang pas)
+        if ($value !== 'cash' && $this->bookingData) {
+            $this->uangBayar = $this->bookingData['harga'];
+        }
+        
+        $this->calculateKembalian();
     }
 
     public function toggleGroup($code)
@@ -105,7 +112,13 @@ new class extends Component {
     public function calculateKembalian()
     {
         if ($this->bookingData && $this->uangBayar > 0) {
-            $this->uangKembalian = max(0, $this->uangBayar - $this->bookingData['harga']);
+            // Jika bukan cash, kembalian selalu 0 (harus uang pas)
+            if ($this->selectedMethod !== 'cash') {
+                $this->uangKembalian = 0;
+            } else {
+                // Hanya untuk cash, ada kembalian
+                $this->uangKembalian = max(0, $this->uangBayar - $this->bookingData['harga']);
+            }
         } else {
             $this->uangKembalian = 0;
         }
@@ -115,9 +128,18 @@ new class extends Component {
     {
         $this->validate();
 
-        if ($this->uangBayar < $this->bookingData['harga']) {
-            $this->toast('error', 'Error!', 'Uang bayar tidak boleh kurang dari total harga');
-            return;
+        // Validasi untuk pembayaran non-tunai: harus uang pas
+        if ($this->selectedMethod !== 'cash') {
+            if ($this->uangBayar != $this->bookingData['harga']) {
+                $this->toast('error', 'Error!', 'Untuk pembayaran non-tunai, jumlah bayar harus sama dengan total harga (uang pas)');
+                return;
+            }
+        } else {
+            // Validasi untuk pembayaran tunai: tidak boleh kurang dari total harga
+            if ($this->uangBayar < $this->bookingData['harga']) {
+                $this->toast('error', 'Error!', 'Uang bayar tidak boleh kurang dari total harga');
+                return;
+            }
         }
 
         try {
@@ -142,7 +164,7 @@ new class extends Component {
                 'metode_pembayaran' => $this->selectedMethod,
                 'status' => 'completed',
                 'tanggal' => now(),
-                'jumlah' => $this->bookingData['harga'],
+                'jumlah_bayar' => $this->bookingData['harga'],
             ]);
 
             // Update penyewaan status
@@ -153,7 +175,7 @@ new class extends Component {
             // Update status motor menjadi 'disewa'
             $motor = Motors::find($this->bookingData['motor_id']);
             if ($motor) {
-                $motor->status = 'disewa';
+                $motor->status = 'dibayar';
                 $motor->save();
             }
 
@@ -313,9 +335,13 @@ new class extends Component {
 
                     <!-- Input uang bayar -->
                     <div class="space-y-2">
-                        <label class="block text-sm font-medium text-gray-700 flex items-center gap-2">
-                            <x-icon name="o-banknotes" class="w-4 h-4" />
+                        <label class="block text-sm font-medium text-gray-700">
                             Uang Bayar
+                            @if($selectedMethod && $selectedMethod !== 'cash')
+                                <span class="text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded ml-2">
+                                    (Harus uang pas)
+                                </span>
+                            @endif
                         </label>
                         <x-input 
                             wire:model.live="uangBayar" 
@@ -326,8 +352,14 @@ new class extends Component {
                             prefix="Rp"
                             class="text-right"
                             error-field="uangBayar"
-                            icon="o-currency-dollar"
+                            icon="o-banknotes"
+                            :readonly="$selectedMethod && $selectedMethod !== 'cash'"
                         />
+                        @if($selectedMethod && $selectedMethod !== 'cash')
+                            <p class="text-xs text-amber-600">
+                                ⚠️ Pembayaran non-tunai harus menggunakan jumlah yang tepat (tidak ada kembalian)
+                            </p>
+                        @endif
                         @error('uangBayar')
                             <p class="text-xs text-red-500">{{ $message }}</p>
                         @enderror
@@ -335,41 +367,37 @@ new class extends Component {
 
                     <!-- Uang kembalian (auto calculate) -->
                     <div class="space-y-2">
-                        <label class="block text-sm font-medium text-gray-700 flex items-center gap-2">
-                            <x-icon name="o-arrow-uturn-left" class="w-4 h-4" />
-                            Uang Kembalian
-                        </label>
-                        <div class="relative">
-                            <div class="flex">
-                                <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-                                    Rp
-                                </span>
-                                <input 
-                                    type="text" 
-                                    value="{{ number_format($uangKembalian, 0, ',', '.') }}"
-                                    readonly 
-                                    class="flex-1 block w-full rounded-none rounded-r-md border-gray-300 bg-gray-50 text-right {{ $uangKembalian > 0 ? 'text-green-600 font-semibold' : 'text-gray-500' }}"
-                                >
-                            </div>
-                        </div>
-                        @if($uangKembalian > 0)
+                        <label class="block text-sm font-medium text-gray-700">Uang Kembalian</label>
+                        <x-input 
+                            type="text" 
+                            value="{{ $selectedMethod !== 'cash' ? '0' : number_format($uangKembalian, 0, ',', '.') }}"
+                            readonly 
+                            prefix="Rp"
+                            class="text-right {{ ($selectedMethod === 'cash' && $uangKembalian > 0) ? 'text-green-600 font-semibold' : 'text-gray-500' }}"
+                            icon="o-arrow-uturn-left"
+                        />
+                        @if($selectedMethod === 'cash' && $uangKembalian > 0)
                             <p class="text-xs text-green-600">✓ Kembalian: Rp {{ number_format($uangKembalian, 0, ',', '.') }}</p>
+                        @elseif($selectedMethod && $selectedMethod !== 'cash')
+                            <p class="text-xs text-blue-600">ℹ️ Pembayaran non-tunai tidak ada kembalian</p>
                         @endif
-                        @if($bookingData && $uangBayar > 0 && $uangBayar < $bookingData['harga'])
+                        @if($bookingData && $uangBayar > 0 && $selectedMethod === 'cash' && $uangBayar < $bookingData['harga'])
                             <p class="text-xs text-red-500">⚠️ Uang bayar kurang dari total harga</p>
+                        @elseif($bookingData && $uangBayar > 0 && $selectedMethod !== 'cash' && $uangBayar != $bookingData['harga'])
+                            <p class="text-xs text-red-500">⚠️ Jumlah bayar harus sama dengan total harga (uang pas)</p>
                         @endif
                     </div>
 
                     <!-- Catatan opsional -->
                     <div class="space-y-2">
-                        <label class="block text-sm font-medium text-gray-700 flex items-center gap-2">
-                            <x-icon name="o-chat-bubble-left-ellipsis" class="w-4 h-4" />
+                        <label class="block text-sm font-medium text-gray-700">
                             Catatan (Opsional)
                         </label>
                         <x-textarea 
                             wire:model="catatan" 
                             placeholder="Tambahkan catatan pembayaran..."
                             rows="3"
+                            icon="o-chat-bubble-left-ellipsis"
                         />
                     </div>
 
@@ -384,7 +412,9 @@ new class extends Component {
                 <x-button 
                     class="btn-primary btn-wide" 
                     icon="o-check-circle" 
-                    :disabled="!$selectedMethod || !$bookingData || $uangBayar < ($bookingData['harga'] ?? 0)" 
+                    :disabled="!$selectedMethod || !$bookingData || 
+                              ($selectedMethod === 'cash' && $uangBayar < $bookingData['harga']) || 
+                              ($selectedMethod !== 'cash' && $uangBayar != $bookingData['harga'])" 
                     wire:click="confirmPayment"
                     spinner="confirmPayment"
                 >

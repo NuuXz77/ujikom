@@ -21,7 +21,7 @@ new class extends Component {
         ['key' => 'bagi_hasil_admin', 'label' => 'Admin', 'sortable' => true],
         ['key' => 'settled_at', 'label' => 'Settled', 'sortable' => true],
         ['key' => 'created_at', 'label' => 'Dibuat', 'sortable' => true],
-        ['key' => 'actions', 'label' => 'Aksi', 'sortable' => false],
+        // ['key' => 'actions', 'label' => 'Aksi', 'sortable' => false],
     ];
 
     public string $search = '';

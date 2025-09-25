@@ -23,6 +23,57 @@ new class extends Component {
         $this->penyewa = $this->booking->user;
     }
 
+    // Konfirmasi ubah status motor menjadi 'disewa' ketika pembayaran sudah PAID
+    public function confirmRental()
+    {
+        if (!$this->payment || !$this->payment->isPaid()) {
+            $this->error('Tidak dapat konfirmasi. Pembayaran belum berstatus paid.');
+            return;
+        }
+
+        try {
+            // Hanya update status motor menjadi 'disewa'
+            if ($this->motor && $this->motor->status !== 'disewa') {
+                $this->motor->update(['status' => 'disewa']);
+            }
+
+            $this->success('Motor berhasil dikonfirmasi. Status motor sekarang: disewa.');
+
+            // Refresh data tampilan
+            $this->mount($this->booking->ID_Penyewaan);
+            $this->dispatch('refresh');
+        } catch (\Exception $e) {
+            $this->error('Gagal konfirmasi: ' . $e->getMessage());
+        }
+    }
+
+    // Konfirmasi pengembalian motor
+    public function confirmReturn()
+    {
+        if ($this->booking->status !== 'menunggu_verifikasi_pengembalian') {
+            $this->error('Tidak dapat konfirmasi pengembalian. Status booking saat ini: ' . $this->booking->status);
+            return;
+        }
+
+        try {
+            // Update status booking menjadi 'selesai'
+            $this->booking->update(['status' => 'selesai']);
+            
+            // Update status motor menjadi 'tersedia'
+            if ($this->motor) {
+                $this->motor->update(['status' => 'tersedia']);
+            }
+
+            $this->success('Pengembalian berhasil dikonfirmasi. Motor sekarang tersedia untuk disewa.');
+
+            // Refresh data tampilan
+            $this->mount($this->booking->ID_Penyewaan);
+            $this->dispatch('refresh');
+        } catch (\Exception $e) {
+            $this->error('Gagal konfirmasi pengembalian: ' . $e->getMessage());
+        }
+    }
+
     public function activateBooking()
     {
         if ($this->booking->status !== 'pending') {
@@ -84,17 +135,17 @@ new class extends Component {
 
     public function cancelBooking()
     {
-        if (!in_array($this->booking->status, ['pending', 'active'])) {
-            $this->error('Booking tidak dapat dibatalkan. Status saat ini: ' . $this->booking->status);
-            return;
-        }
+        // if (!in_array($this->booking->status, ['pending', 'active'])) {
+        //     $this->error('Booking tidak dapat dibatalkan. Status saat ini: ' . $this->booking->status);
+        //     return;
+        // }
 
         try {
             // Update status booking
-            $this->booking->update(['status' => 'canceled']);
+            $this->booking->update(['status' => 'selesai']);
             
             // Jika booking sedang aktif, kembalikan status motor ke tersedia
-            if ($this->booking->status === 'active') {
+            if ($this->booking->status === 'selesai') {
                 $this->motor->update(['status' => 'tersedia']);
             }
             
@@ -120,6 +171,10 @@ new class extends Component {
             'canceled' => 'badge badge-error',
             'paid' => 'badge badge-success',
             'failed' => 'badge badge-error',
+            'dibayar' => 'badge badge-info',
+            'disewa' => 'badge badge-primary',
+            'dikembalikan' => 'badge badge-warning',
+            'selesai' => 'badge badge-success',
             default => 'badge badge-neutral'
         };
     }
@@ -131,33 +186,25 @@ new class extends Component {
             <div class="flex items-center gap-2">
                 <x-button label="Kembali" icon="o-arrow-left" link="/admin/bookings" class="btn-outline" />
                 
-                @if($booking->status === 'pending' && $payment && $payment->isPaid())
+                {{-- Hanya tombol konfirmasi ketika booking sudah dibayar dan motor belum disewa --}}
+                @if($booking->status === 'dibayar' && $payment && $payment->isPaid() && $motor->status !== 'disewa')
                     <x-button 
-                        label="Aktifkan Booking" 
-                        icon="o-check" 
-                        class="btn-success" 
-                        wire:click="activateBooking"
-                        wire:confirm="Yakin ingin mengaktifkan booking ini? Motor akan berstatus 'disewa'."
-                    />
-                @endif
-                
-                @if($booking->status === 'active')
-                    <x-button 
-                        label="Selesaikan Booking" 
+                        label="Konfirmasi Penyewaan" 
                         icon="o-check-circle" 
-                        class="btn-info" 
-                        wire:click="completeBooking"
-                        wire:confirm="Yakin ingin menyelesaikan booking ini? Motor akan tersedia kembali."
+                        class="btn-primary" 
+                        wire:click="confirmRental"
+                        wire:confirm="Konfirmasi penyewaan ini? Motor akan diubah ke status 'disewa'."
                     />
                 @endif
-                
-                @if(in_array($booking->status, ['pending', 'active']))
+
+                {{-- Tombol konfirmasi pengembalian ketika booking sudah dikembalikan --}}
+                @if($booking->status === 'menunggu_verifikasi_pengembalian')
                     <x-button 
-                        label="Batalkan Booking" 
-                        icon="o-x-mark" 
-                        class="btn-error" 
-                        wire:click="cancelBooking"
-                        wire:confirm="Yakin ingin membatalkan booking ini?"
+                        label="Konfirmasi Pengembalian" 
+                        icon="o-check-badge" 
+                        class="btn-success" 
+                        wire:click="confirmReturn"
+                        wire:confirm="Konfirmasi pengembalian ini? Status akan diubah menjadi 'selesai' dan motor menjadi 'tersedia'."
                     />
                 @endif
             </div>

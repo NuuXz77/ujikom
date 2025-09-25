@@ -17,12 +17,12 @@ class Transaksi extends Model
         'metode_pembayaran',
         'status',
         'tanggal',
-        'jumlah',
+        'jumlah_bayar',
     ];
 
     protected $casts = [
         'tanggal' => 'datetime',
-        'jumlah' => 'decimal:2',
+        'jumlah_bayar' => 'decimal:2',
     ];
 
     public function penyewaan()

@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
+            MotorSeeder::class,
             // tambah di bawah ini jika ada seeder lain
         ]);
     }

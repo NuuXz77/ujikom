@@ -14,15 +14,15 @@ new class extends Component {
     public array $sortBy = ['column' => 'tanggal', 'direction' => 'desc'];
     public array $headers = [
         ['key' => 'no', 'label' => 'No', 'sortable' => false],
-        ['key' => 'kode', 'label' => 'Kode Sewa', 'sortable' => true],
+        ['key' => 'kode', 'label' => 'Kode Sewa', 'sortable' => false],
         ['key' => 'tanggal', 'label' => 'Tanggal', 'sortable' => true],
-        ['key' => 'motor', 'label' => 'Motor', 'sortable' => true],
-        ['key' => 'pemilik', 'label' => 'Pemilik', 'sortable' => true],
+        ['key' => 'motor', 'label' => 'Motor', 'sortable' => false],
+        ['key' => 'pemilik', 'label' => 'Pemilik', 'sortable' => false],
         ['key' => 'periode_sewa', 'label' => 'Periode Sewa', 'sortable' => false],
-        ['key' => 'metode_pembayaran', 'label' => 'Metode', 'sortable' => true],
-        ['key' => 'status', 'label' => 'Status', 'sortable' => true],
-        ['key' => 'harga', 'label' => 'Total Bayar', 'sortable' => true],
-        ['key' => 'actions', 'label' => 'Aksi', 'sortable' => false],
+        ['key' => 'metode_pembayaran', 'label' => 'Metode', 'sortable' => false],
+        ['key' => 'status', 'label' => 'Status', 'sortable' => false],
+        ['key' => 'harga', 'label' => 'Total Bayar', 'sortable' => false],
+        // ['key' => 'actions', 'label' => 'Aksi', 'sortable' => false],
     ];
 
     public string $search = '';
@@ -42,7 +42,7 @@ new class extends Component {
         })->pluck('metode_pembayaran')->unique()->sort()->values()->toArray();
 
         // Hanya ambil merk motor yang pernah disewa user yang login
-        $this->merks = \App\Models\Motors::whereHas('penyewaans', function($q) use ($userId) {
+        $this->merks = \App\Models\Motors::whereHas('penyewaan', function($q) use ($userId) {
             $q->where('penyewa_id', $userId);
         })->pluck('merk')->unique()->sort()->values()->toArray();
     }
@@ -210,7 +210,7 @@ new class extends Component {
                 <x-icon name="o-currency-dollar" class="w-4 h-4 text-green-500" />
                 <div>
                     <div class="font-bold text-green-600">
-                        Rp {{ number_format($row->jumlah ?? 0, 0, ',', '.') }}
+                        Rp {{ number_format($row->jumlah_bayar ?? 0, 0, ',', '.') }}
                     </div>
                     <div class="text-xs text-gray-500">
                         Total: Rp {{ number_format($row->penyewaan->harga ?? 0, 0, ',', '.') }}

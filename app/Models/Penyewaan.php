@@ -20,6 +20,9 @@ class Penyewaan extends Model
         'tipe_durasi',
         'status',
         'harga',
+        'catatan_pengembalian',
+        'tanggal_pengajuan_pengembalian',
+        'tanggal_pengembalian',
     ];
 
     public function user()
@@ -34,12 +37,12 @@ class Penyewaan extends Model
 
     public function transaksi()
     {
-        return $this->hasOne(Transaksi::class, 'ID_Penyewaan', 'ID_Penyewaan');
+        return $this->hasOne(Transaksi::class, 'penyewaan_id', 'ID_Penyewaan');
     }
 
     public function bagiHasil()
     {
-        return $this->hasOne(BagiHasil::class, 'ID_Penyewaan', 'ID_Penyewaan');
+        return $this->hasOne(BagiHasil::class, 'penyewaan_id', 'ID_Penyewaan');
     }
 
     public function pembayaran()

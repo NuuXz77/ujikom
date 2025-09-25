@@ -14,11 +14,11 @@ new class extends Component {
 
     public function openModal($id)
     {
-        $id = is_array($id) && isset($id) ? $id : $id;
+        $id = is_array($id) && isset($id['id']) ? $id['id'] : $id;
         $booking = Penyewaan::with('motor')
             ->where('ID_Penyewaan', $id)
             ->where('penyewa_id', Auth::id())
-            ->whereIn('status', ['pending','disewa'])
+            ->whereIn('status', ['pending', 'dibayar']) // Bisa cancel pending dan dibayar
             ->firstOrFail();
 
         $this->bookingId = $booking->ID_Penyewaan;
@@ -36,22 +36,30 @@ new class extends Component {
     {
         $booking = Penyewaan::where('ID_Penyewaan', $this->bookingId)
             ->where('penyewa_id', Auth::id())
-            ->where('status', 'pending')
+            ->whereIn('status', ['pending', 'dibayar'])
             ->first();
+            
         if($booking){
             $booking->update(['status' => 'dibatalkan']);
-            $this->toast('success', 'Dibatalkan', 'Booking berhasil dibatalkan.');
+            
+            // Jika motor sedang dibooking, kembalikan ke tersedia
+            if($booking->motor && $booking->motor->status === 'dibooking') {
+                $booking->motor->update(['status' => 'tersedia']);
+            }
+            
+            $this->success('Booking berhasil dibatalkan.');
             $this->dispatch('refresh');
         } else {
-            $this->toast('warning', 'Gagal', 'Booking tidak bisa dibatalkan.');
+            $this->error('Booking tidak bisa dibatalkan.');
         }
+        
         $this->reset(['bookingId','kode','motor','plat','mulai','selesai','durasi','harga']);
         $this->cancelModal = false;
     }
 }; ?>
 
 <div>
-    <x-mary-modal wire:model="cancelModal" title="Batalkan Booking" persistent class="backdrop-blur">
+    <x-modal wire:model="cancelModal" title="Batalkan Booking" persistent class="backdrop-blur">
         <div class="mb-4 space-y-2 text-sm">
             <p>Anda yakin ingin membatalkan booking berikut?</p>
             <div class="bg-base-200 p-3 rounded space-y-1">
@@ -66,5 +74,5 @@ new class extends Component {
             <x-button label="Tutup" @click="$wire.cancelModal = false" />
             <x-button label="Batalkan" wire:click="cancelBooking" class="btn-error" spinner="cancelBooking" />
         </x-slot:actions>
-    </x-mary-modal>
+    </x-modal>
 </div>

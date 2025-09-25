@@ -141,6 +141,8 @@ new class extends Component {
                             <x-badge value="Verifikasi" class="badge badge-warning badge-soft" />
                         @elseif ($motor->status == 'dibooking')
                             <x-badge value="Dibooking" class="badge badge-info badge-soft" />
+                        @elseif ($motor->status == 'dibayar')
+                            <x-badge value="Dibayar" class="badge badge-info badge-soft" />
                         @else
                             <x-badge value="Perawatan" class="badge badge-error badge-soft" />
                         @endif

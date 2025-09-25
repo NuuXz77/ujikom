@@ -33,6 +33,6 @@ class Motors extends Model
 
     public function penyewaan()
     {
-        return $this->hasMany(Penyewaan::class, 'ID_Motor', 'ID_Motor');
+        return $this->hasMany(Penyewaan::class, 'motor_id', 'ID_Motor');
     }
 }

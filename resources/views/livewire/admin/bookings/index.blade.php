@@ -7,6 +7,8 @@ use Illuminate\Pagination\LengthAwarePaginator;
 new class extends Component {
     use WithPagination;
 
+    protected $listeners = ['refresh' => '$refresh'];
+
     public int $perPage = 10;
     public array $sortBy = ['column' => 'created_at', 'direction' => 'desc'];
     public array $headers = [
@@ -124,7 +126,11 @@ new class extends Component {
             @elseif ($status === 'active')
                 <x-badge value="Active" class="badge badge-primary badge-soft" />
             @elseif ($status === 'dibayar')
-                <x-badge value="Dibayar" class="badge badge-success badge-soft" />
+                <x-badge value="Dibayar" class="badge badge-info badge-soft" />
+            @elseif ($status === 'selesai')
+                <x-badge value="Selesai" class="badge badge-success badge-soft" />
+            @elseif ($status === 'menunggu_verifikasi_pengembalian')
+                <x-badge value="Harus dikonfirmasi" class="badge badge-info badge-soft" />
             @else
                 <x-badge value="Canceled" class="badge badge-error badge-soft" />
             @endif
@@ -141,11 +147,10 @@ new class extends Component {
                 @if($row->status === 'pending')
                     <x-menu-item title="Aktifkan" icon="o-check" wire:click="$dispatch('activateBooking', { id: {{ $row->ID_Penyewaan }} })" />
                 @endif
-                @if(in_array($row->status, ['active']))
-                    <x-menu-item title="Selesaikan" icon="o-check-circle" wire:click="$dispatch('completeBooking', { id: {{ $row->ID_Penyewaan }} })" />
-                @endif
-                @if(in_array($row->status, ['pending','active']))
-                    <x-menu-item title="Batalkan" icon="o-x-mark" wire:click="$dispatch('cancelBooking', { id: {{ $row->ID_Penyewaan }} })" class="text-red-500" />
+                @if($row->status === 'selesai')
+                    <x-menu-separator />
+                    <x-menu-item title="Edit" icon="o-pencil-square" link="/admin/bookings/edit/{{ $row->ID_Penyewaan }}" />
+                    <x-menu-item title="Hapus" icon="o-trash" wire:click="$dispatch('showDeleteModal', { id: {{ $row->ID_Penyewaan }} })" class="text-red-500" />
                 @endif
             </x-dropdown>
         @endscope
@@ -153,4 +158,6 @@ new class extends Component {
             <x-icon name="o-clipboard-document-list" label="Belum ada penyewaan." />
         </x-slot:empty>
     </x-table>
+
+    <livewire:admin.bookings.delete />
 </div>

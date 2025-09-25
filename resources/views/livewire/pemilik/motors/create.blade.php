@@ -113,7 +113,7 @@ new class extends Component {
                     {{-- Motor Photo Upload --}}
                     <div>
                         <x-file wire:model="motorPhoto" accept="image/png, image/jpeg" label="Foto Motor">
-                            <img src="{{ $motorPhoto ? $motorPhoto->temporaryUrl() : auth()->user()->avatar ?? 'https://wallpapers-clan.com/wp-content/uploads/2024/03/re-zero-rem-flower-lovely-gif-preview-desktop-wallpaper.gif' }}"
+                            <img src="{{ $motorPhoto ? $motorPhoto->temporaryUrl() : auth()->user()->avatar ?? 'https://placehold.co/400x300?text=Upload+Photo' }}"
                                 class="h-40 w-full object-cover rounded-lg" />
                         </x-file>
                     </div>
@@ -121,7 +121,7 @@ new class extends Component {
                     {{-- Document Upload --}}
                     <div>
                         <x-file wire:model="motorDocument" accept="image/png, image/jpeg" label="Foto Dokumen (STNK)">
-                            <img src="{{ $motorDocument ? $motorDocument->temporaryUrl() : auth()->user()->avatar ?? 'https://wallpapers-clan.com/wp-content/uploads/2024/03/re-zero-rem-flower-lovely-gif-preview-desktop-wallpaper.gif' }}"
+                            <img src="{{ $motorDocument ? $motorDocument->temporaryUrl() : auth()->user()->avatar ?? 'https://placehold.co/400x300?text=Upload+Dokumen' }}"
                                 class="h-40 w-full object-cover rounded-lg" />
                         </x-file>
                     </div>

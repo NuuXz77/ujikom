@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('ID_Transaksi');
             $table->foreignId('penyewaan_id')->unique()->constrained('penyewaans','ID_Penyewaan')->onDelete('cascade');
             $table->string('metode_pembayaran'); // e.g., 'credit_card', 'cash'
+            $table->string('jumlah_bayar'); // e.g., 'credit_card', 'cash'
             $table->string('status'); // e.g., 'paid', 'unpaid', 'failed'
             $table->date('tanggal');
             $table->timestamps();
