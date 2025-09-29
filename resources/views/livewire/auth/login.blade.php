@@ -59,4 +59,16 @@ new #[Layout('components.layouts.guest')] #[Title('Login')] class
             <x-button label="Masuk" type="submit" icon="o-paper-airplane" class="btn-primary" spinner="login" />
         </x-slot:actions>
     </x-form>
+    
+    <!-- Catatan User Seed -->
+    <div class="mt-6 p-4 bg-yellow-50 border border-yellow-300 rounded text-sm text-yellow-800">
+        <strong>Catatan Login User Seed:</strong>
+        <ul class="mt-2 list-disc pl-5">
+            <li><b>Admin:</b> admin@a.com | password: password123</li>
+            <li><b>Pemilik:</b> pemilik@a.com | password: password123</li>
+            <li><b>Penyewa:</b> penyewa@a.com | password: password123</li>
+        </ul>
+        <span class="block mt-2">Gunakan data di atas untuk login.</span>
+        <span class="block mt-2">Jika ingin menggunakan akun lain klik <b>daftar.</b></span>
+    </div>
 </div>

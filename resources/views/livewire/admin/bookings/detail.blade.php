@@ -184,7 +184,7 @@ new class extends Component {
     <x-header title="Detail Booking #{{ $booking->ID_Penyewaan }}" separator progress-indicator>
         <x-slot:actions>
             <div class="flex items-center gap-2">
-                <x-button label="Kembali" icon="o-arrow-left" link="/admin/bookings" class="btn-outline" />
+                <x-button label="Kembali" icon="o-arrow-left" link="/admin/bookings"/>
                 
                 {{-- Hanya tombol konfirmasi ketika booking sudah dibayar dan motor belum disewa --}}
                 @if($booking->status === 'dibayar' && $payment && $payment->isPaid() && $motor->status !== 'disewa')

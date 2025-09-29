@@ -169,7 +169,7 @@ new class extends Component {
                                             placeholder="Password auto-generate" error-field="password"
                                             class="font-mono text-sm" readonly />
                                         <x-button icon="o-arrow-path" wire:click="generatePassword"
-                                            class="btn-sm btn-outline btn-warning" title="Generate Password Baru"
+                                            class="btn-sm btn-warning" title="Generate Password Baru"
                                             type="button" />
                                     </div>
                                     <p class="text-xs text-yellow-700 mt-1">

@@ -126,7 +126,7 @@ new class extends Component {
 <div>
     <x-header title="Edit Booking #{{ $booking->ID_Penyewaan }}" separator progress-indicator>
         <x-slot:actions>
-            <x-button icon="o-arrow-left" label="Kembali" link="/bookings" class="btn-outline" />
+            <x-button icon="o-arrow-left" label="Kembali" link="/bookings"/>
         </x-slot:actions>
     </x-header>
 
@@ -210,7 +210,7 @@ new class extends Component {
             </div>
 
             <div class="flex justify-end gap-4 mt-8">
-                <x-button label="Batal" link="/bookings" class="btn-outline" />
+                <x-button label="Batal" link="/bookings"/>
                 <x-button label="Update Booking" type="submit" icon="o-check" class="btn-primary" spinner="update" />
             </div>
         </x-form>

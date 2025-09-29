@@ -41,7 +41,7 @@ new class extends Component {
     <x-header title="Detail Motor {{ $motor->merk }}" separator progress-indicator>
         <x-slot:actions>
             <div class="flex items-center gap-2">
-                <x-button icon="o-arrow-left" label="Kembali" link="/owner/motors" class="btn-outline" />
+                <x-button icon="o-arrow-left" label="Kembali" link="/owner/motors"/>
                 <x-button icon="o-pencil" label="Edit" link="/owner/motors/edit/{{ $motor->ID_Motor }}" class="btn-primary" />
                 
                 @if ($motor->status == 'tersedia')
@@ -139,8 +139,9 @@ new class extends Component {
             {{-- Riwayat Penyewaan Terbaru --}}
             <x-card title="Riwayat Penyewaan Terbaru" class="h-fit">
                 @php
+                    // Perbaikan: ganti 'users.id' menjadi 'users.ID_User'
                     $recent_rentals = \DB::table('penyewaans')
-                        ->join('users', 'users.id', '=', 'penyewaans.penyewa_id')
+                        ->join('users', 'users.ID_User', '=', 'penyewaans.penyewa_id')
                         ->where('penyewaans.motor_id', $motor->ID_Motor)
                         ->select('penyewaans.*', 'users.nama as penyewa_nama')
                         ->orderBy('penyewaans.created_at', 'desc')

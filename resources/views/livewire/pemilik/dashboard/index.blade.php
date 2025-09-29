@@ -93,7 +93,7 @@ new class extends Component {
 }; ?>
 
 <div>
-    <x-header title="Hallo Pemilik {{ auth()->user()->nama }}" separator progress-indicator />
+    <x-header title="Selamat Datang {{ auth()->user()->nama }}" separator progress-indicator />
 
     {{-- STATISTIK GRID PEMILIK --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 my-6">

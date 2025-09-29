@@ -68,14 +68,14 @@ new class extends Component {
 <div>
     <x-modal wire:model="deleteModal" title="Hapus Booking" persistent class="backdrop-blur">
         <div class="mb-4 space-y-4">
-            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+            <div class="p-4 rounded-lg border border-red-200">
                 <div class="flex items-start">
                     <x-icon name="o-exclamation-triangle" class="w-6 h-6 text-red-500 mr-3 mt-0.5" />
                     <div>
                         <h4 class="font-medium text-red-800 mb-2">Peringatan!</h4>
                         <p class="text-sm text-red-700 mb-3">Anda akan menghapus booking berikut secara permanen:</p>
                         
-                        <div class="bg-white p-3 rounded border">
+                        <div class="p-3 rounded border">
                             <div class="space-y-2 text-sm">
                                 <div class="flex justify-between">
                                     <span class="text-gray-600">Kode:</span>
@@ -105,7 +105,7 @@ new class extends Component {
                 </div>
             </div>
 
-            <div class="bg-yellow-50 p-3 rounded-lg border border-yellow-200">
+            <div class="p-3 rounded-lg border border-yellow-200">
                 <div class="flex items-start">
                     <x-icon name="o-information-circle" class="w-5 h-5 text-yellow-500 mr-2 mt-0.5" />
                     <div class="text-sm text-yellow-700">
@@ -117,7 +117,7 @@ new class extends Component {
         </div>
 
         <x-slot:actions>
-            <x-button label="Batal" wire:click="closeModal" class="btn-outline" />
+            <x-button label="Batal" wire:click="closeModal"/>
             <x-button 
                 label="Ya, Hapus Booking" 
                 wire:click="deleteBooking" 

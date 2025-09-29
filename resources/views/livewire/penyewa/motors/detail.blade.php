@@ -47,7 +47,7 @@ new class extends Component {
     <x-header title="Detail Booking #{{ $booking->ID_Penyewaan }}" separator progress-indicator>
         <x-slot:actions>
             <div class="flex items-center gap-2">
-                <x-button icon="o-arrow-left" label="Kembali" link="/bookings" class="btn-outline" />
+                <x-button icon="o-arrow-left" label="Kembali" link="/bookings" />
                 
                 {{-- Tombol Cancel untuk booking pending --}}
                 @if($booking->status === 'pending')

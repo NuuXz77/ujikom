@@ -84,7 +84,7 @@ new class extends Component {
                     <x-button 
                         icon="o-arrow-path" 
                         wire:click="generateNewPassword" 
-                        class="btn-sm btn-outline"
+                        class="btn-sm"
                         title="Generate Password Baru"
                     />
                 </div>

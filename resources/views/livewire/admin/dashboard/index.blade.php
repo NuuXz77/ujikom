@@ -82,7 +82,7 @@ new class extends Component {
 
 <div>
     {{-- HAPUS DROPDOWN DUPLIKAT DI SINI --}}
-    <x-header title="Hallo Admin {{ auth()->user()->nama }}" separator progress-indicator />
+    <x-header title="Selamat Datang {{ auth()->user()->nama }}" separator progress-indicator />
 
     {{-- STATISTIK GRID --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-6">

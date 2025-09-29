@@ -199,7 +199,7 @@ new class extends Component {
                 <x-button 
                     icon="o-eye" 
                     link="/admin/bookings/detail/{{ $row->ID_Penyewaan }}"
-                    class="btn-outline btn-sm"
+                    class="btn-sm"
                     tooltip="Detail Booking"
                 />
             </div>
